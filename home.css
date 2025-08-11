@@ -6,14 +6,6 @@ body
     color: rgb(255, 255, 255);
 }
 
-#circleBorder
-{
-    width: 200px;
-    height: 100px;
-    background: linear-gradient(90deg, cyan, blue); 
-    border-radius: 50%;
-}
-
 #roundedBorder
 {
     width: 98%;
@@ -47,4 +39,83 @@ a
     width: 100%;
     height: 30px;
     background-color: white;
+}
+
+#balls
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#ball1
+{
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: white; 
+    border-radius: 50%;
+    mix-blend-mode: difference;
+}
+
+#ball2
+{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: blue; 
+    border-radius: 50%;
+    mix-blend-mode: screen;
+}
+
+#ball3
+{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: red; 
+    border-radius: 50%;
+    mix-blend-mode: screen;
+}
+
+#ball4
+{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: green; 
+    border-radius: 50%;
+    mix-blend-mode: screen;
+}
+
+#ball5
+{
+    position: absolute;
+    width: 275px;
+    height: 275px;
+    background: yellow; 
+    border-radius: 50%;
+    mix-blend-mode: difference;
+}
+
+#ball6
+{
+    position: absolute;
+    width: 275px;
+    height: 275px;
+    background: cyan; 
+    border-radius: 50%;
+    mix-blend-mode: difference;
+}
+
+#ball7
+{
+    position: absolute;
+    width: 275px;
+    height: 275px;
+    background: brown; 
+    border-radius: 50%;
+    mix-blend-mode: difference;
 }
