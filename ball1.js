@@ -1,85 +1,89 @@
+class Ball {
+    constructor(id, xPct, yPct, xVel, yVel, sectionIndex) {
+        this.div = document.getElementById(id);
+        this.size = 0; 
 
-class ball
-{
-    constructor(div, leftPos, heightPos, xVelocity, yVelocity, topPos, bottomPos)
-    {
-        this.div = div;
-        this.leftPos = leftPos;
-        this.heightPos = heightPos;
-        this.xVelocity = xVelocity;
-        this.yVelocity = yVelocity;
-        this.topPos = topPos;
-        this.bottomPos = bottomPos;
+        this.x = window.innerWidth * xPct;
+        this.y = document.body.scrollHeight * yPct;
+
+        this.xVel = xVel;
+        this.yVel = yVel;
+
+        this.sectionIndex = sectionIndex;
+
+        this.div.style.position = 'absolute';
+        this.div.style.margin = '0';
+        this.div.style.left = this.x + 'px';
+        this.div.style.top = this.y + 'px';
     }
 }
 
-let innerWidth = window.innerWidth;
+function getSectionBounds(index) {
+    const dividers = [
+        document.getElementById('div1'),
+        document.getElementById('div2'),
+        document.getElementById('div3'),
+    ];
 
-const divider1 = document.getElementById("div1");
-const divider2 = document.getElementById("div2");
-const divider3 = document.getElementById("div3");
+    const pageH = document.body.scrollHeight;
 
+    const boundaries = [
+        0,
+        dividers[0] ? dividers[0].getBoundingClientRect().top + window.scrollY : pageH * 0.33,
+        dividers[1] ? dividers[1].getBoundingClientRect().top + window.scrollY : pageH * 0.66,
+        dividers[2] ? dividers[2].getBoundingClientRect().top + window.scrollY : pageH,
+    ];
 
-let ball1 = new ball(document.getElementById("ball1"), document.getElementById("ball1").getBoundingClientRect().left, document.getElementById("ball1").getBoundingClientRect().top,
-                         2, 2, 0, divider1.getBoundingClientRect().top - 450);
-let ball2 = new ball(document.getElementById("ball2"), document.getElementById("ball2").getBoundingClientRect().left, document.getElementById("ball2").getBoundingClientRect().top,
-                        3, -3, divider1.getBoundingClientRect().bottom, divider2.getBoundingClientRect().top - 240);
-let ball3 = new ball(document.getElementById("ball3"), document.getElementById("ball3").getBoundingClientRect().left, document.getElementById("ball3").getBoundingClientRect().top,
-                        -3, 3, divider1.getBoundingClientRect().bottom, divider2.getBoundingClientRect().top - 240);
-let ball4 = new ball(document.getElementById("ball4"), document.getElementById("ball4").getBoundingClientRect().left, document.getElementById("ball4").getBoundingClientRect().top,
-                        -3, -3, divider1.getBoundingClientRect().bottom, divider2.getBoundingClientRect().top - 240);
-let ball5 = new ball(document.getElementById("ball5"), document.getElementById("ball5").getBoundingClientRect().left, document.getElementById("ball5").getBoundingClientRect().top,
-                        2, 2, divider2.getBoundingClientRect().bottom, divider3.getBoundingClientRect().top - 310);
-let ball6 = new ball(document.getElementById("ball6"), document.getElementById("ball6").getBoundingClientRect().left, document.getElementById("ball6").getBoundingClientRect().top,
-                        -2, 2, divider2.getBoundingClientRect().bottom, divider3.getBoundingClientRect().top - 310);
-let ball7 = new ball(document.getElementById("ball7"), document.getElementById("ball7").getBoundingClientRect().left, document.getElementById("ball7").getBoundingClientRect().top,
-                        2, 2, divider2.getBoundingClientRect().bottom, divider3.getBoundingClientRect().top - 310);
-
-
-function movediv(timestamp)
-{
-    innerWidth = window.innerWidth
-    bounce(ball1, 420);
-    bounce(ball2, 220);
-    bounce(ball3, 220);
-    bounce(ball4, 220);
-    bounce(ball5, 310);
-    bounce(ball6, 310);
-    bounce(ball7, 310);
-
-
-    requestAnimationFrame(movediv);
+    return {
+        top: boundaries[index],
+        bottom: boundaries[index + 1],
+    };
 }
 
-function bounce(thisBall, widthOffset, timestamp)
-{
-    thisBall.leftPos += thisBall.xVelocity;
-    thisBall.heightPos += thisBall.yVelocity;
-    thisBall.div.style.marginLeft = (thisBall.leftPos + thisBall.xVelocity) + 'px';
-    thisBall.div.style.marginTop = (thisBall.heightPos + thisBall.yVelocity) + 'px';
+const balls = [
+    new Ball('ball1', 0.05, 0.05, 2, 2, 0),
+    new Ball('ball2', 0.05, 0.38, 3, -3, 1),
+    new Ball('ball3', 0.60, 0.42, -3, 3, 1),
+    new Ball('ball4', 0.30, 0.44, -3, -3, 1),
+    new Ball('ball5', 0.30, 0.68, 2, 2, 2),
+    new Ball('ball6', 0.50, 0.72, -2, 2, 2),
+    new Ball('ball7', 0.70, 0.66, 2, 2, 2),
+];
 
-    console.log(thisBall.xVelocity);
+function bounce(ball) {
+    const W = window.innerWidth;
+    const bounds = getSectionBounds(ball.sectionIndex);
 
-    if(thisBall.leftPos > innerWidth - widthOffset || thisBall.leftPos < 0)
-    {
-        thisBall.xVelocity *= -1;
+    ball.size = ball.div.offsetWidth;
+
+    ball.x += ball.xVel;
+    ball.y += ball.yVel;
+
+    if (ball.x + ball.size > W) {
+        ball.x = W - ball.size;
+        ball.xVel *= -1;
+    } else if (ball.x < 0) {
+        ball.x = 0;
+        ball.xVel *= -1;
     }
 
-    if(thisBall.heightPos > thisBall.bottomPos || thisBall.heightPos < thisBall.topPos)
-    {
-        thisBall.yVelocity *= -1;
+    if (ball.y + ball.size > bounds.bottom) {
+        ball.y = bounds.bottom - ball.size;
+        ball.yVel *= -1;
+    } else if (ball.y < bounds.top) {
+        ball.y = bounds.top;
+        ball.yVel *= -1;
     }
+
+    ball.div.style.left = ball.x + 'px';
+    ball.div.style.top = ball.y + 'px';
 }
 
-requestAnimationFrame(movediv);
+function loop() {
+    for (const ball of balls) {
+        bounce(ball);
+    }
+    requestAnimationFrame(loop);
+}
 
-
-
-
-
-
-
-
-
-
- 
+requestAnimationFrame(loop);
